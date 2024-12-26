@@ -1,3 +1,8 @@
+simple demo :
+https://github.com/user-attachments/assets/ae5a497e-36e8-41e1-8401-3d211ce46572
+
+
+
 # PolynomialApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
