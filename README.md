@@ -179,7 +179,11 @@ Le code backend est organisé comme suit :
 ## Vidéo de démonstration
 
 Regardez la vidéo de démonstration de la plateforme ici :  
-[Regarder maintenant]([https://github.com/user-attachments/assets/8922bdfe-95ed-4c46-b155-2291cc4c61f4])
+[Regarder maintenant]([
+
+https://github.com/user-attachments/assets/87ecdd39-6e8a-4305-bcc3-c07877b4936f
+
+])
 
 ## Authentification
 
