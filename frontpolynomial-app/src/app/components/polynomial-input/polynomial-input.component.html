@@ -1,0 +1,157 @@
+<div class="container">
+  <div class="header-container">
+    <button mat-raised-button color="accent" [matMenuTriggerFor]="menu">
+      Menu
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="navigateToChangePassword()">
+        Change Password
+      </button>
+      <button mat-menu-item (click)="toggleHistory()">
+        View History
+      </button>
+      <button mat-menu-item (click)="logout()">
+        Logout
+      </button>
+    </mat-menu>
+  </div>
+
+  <mat-card class="polynomial-card">
+    <mat-card-header>
+      <mat-card-title>Polynomial Calculator</mat-card-title>
+      <mat-card-subtitle>
+        Enter coefficients for your polynomial equation (ax² + bx + c)
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="polynomialForm" (ngSubmit)="submitPolynomial()">
+        <div formArrayName="coefficients" class="coefficients-container">
+          <div 
+            *ngFor="let coefficient of coefficients.controls; let i = index" 
+            class="coefficient-row"
+            [@fadeInOut]
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Coefficient {{ i + 1 }}</mat-label>
+              <input
+                matInput
+                [formControlName]="i"
+                [placeholder]="getPlaceholder(i)"
+                [errorStateMatcher]="matcher"
+                (keydown.enter)="$event.preventDefault()"
+              />
+              <mat-hint>{{ getHint(i) }}</mat-hint>
+              <mat-error *ngIf="coefficient.invalid && (coefficient.dirty || coefficient.touched)">
+                <ng-container *ngIf="coefficient.hasError('required')">
+                  This coefficient is required
+                </ng-container>
+                <ng-container *ngIf="coefficient.hasError('pattern')">
+                  Please enter a valid number
+                </ng-container>
+              </mat-error>
+              <button 
+                matSuffix 
+                mat-icon-button 
+                type="button"
+                [matTooltip]="'Remove coefficient'"
+                (click)="removeCoefficientField(i)" 
+                *ngIf="coefficients.length > 1"
+                class="remove-button"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button 
+            mat-stroked-button 
+            type="button"
+            color="primary"
+            [matTooltip]="'Add new coefficient'"
+            (click)="addCoefficientField()"
+            [disabled]="coefficients.length >= MAX_COEFFICIENTS"
+          >
+            <mat-icon class="add-icon">add</mat-icon>
+            Add Coefficient
+          </button>
+
+          <div class="action-buttons">
+            <button
+              mat-button
+              type="button"
+              (click)="resetForm()"
+              [disabled]="isLoading"
+              class="reset-button"
+            >
+              Reset
+            </button>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="polynomialForm.invalid || isLoading"
+              class="submit-button"
+            >
+              <span *ngIf="!isLoading">Calculate</span>
+              <mat-progress-spinner
+                *ngIf="isLoading"
+                [diameter]="24"
+                [mode]="'indeterminate'"
+                class="spinner"
+              ></mat-progress-spinner>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div 
+      *ngIf="result" 
+      [@fadeInOut]
+      class="result-container"
+    >
+      <h3 class="result-title">Results</h3>
+      <div class="result-content">
+        <div class="result-item">
+          <span class="result-label">Root:</span>
+          <span class="result-value">{{ result.answer }}</span>
+        </div>
+        <div class="result-item">
+          <span class="result-label">Quotient:</span>
+          <span class="result-value">(x  -  ({{ result.answer }}))   *    ({{ formatPolynomial(result.pol) }})</span>
+        </div>
+      </div>
+    </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div 
+  *ngIf="showHistory && userHistory.length > 0" 
+  class="history-container"
+  [@fadeInOut]
+>
+  <h3 class="history-title">Calculation History</h3>
+  <div class="history-content">
+    <div 
+      *ngFor="let historyItem of userHistory" 
+      class="history-item"
+      [@fadeInOut]
+    >
+      <div>
+        <span class="history-label">Polynomial:</span>
+        <span class="history-value">{{ formatPolynomial(historyItem.coefficients) }}</span>
+      </div>
+      <div>
+        <span class="history-label">Root:</span>
+        <span class="history-value">{{ historyItem.racine }}</span>
+      </div>
+      <div>
+        <span class="history-label">Quotient:</span>
+        <span class="history-value">{{ historyItem.quotient }}</span>
+      </div>
+    </div>
+  </div>
+</div>
